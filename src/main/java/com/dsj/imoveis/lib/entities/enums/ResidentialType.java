@@ -1,0 +1,20 @@
+package com.dsj.imoveis.lib.entities.enums;
+
+public enum ResidentialType {
+    APARTAMENTO,
+    APARTAMENTO_DUPLEX,
+    APARTAMENTO_GARDEN,
+    APARTAMENTO_TRIPLEX,
+    CASA,
+    CASA_CONDOMINIO,
+    COBERTURA,
+    COBERTURA_DUPLEX,
+    FLAT,
+    KITNET,
+    LOFT,
+    SOBRADO,
+    SOBRADO_DUPLEX,
+    SOBRADO_CONDOMINIO,
+    TERRENO,
+    TERRENO_CONDOMINIO
+}
