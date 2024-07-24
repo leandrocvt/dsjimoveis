@@ -1,12 +1,13 @@
 package com.dsj.imoveis.lib.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @Entity
-@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_address")
 public class Address {
 
@@ -19,7 +20,7 @@ public class Address {
     private String zipCode;
 
     @OneToOne
-    @MapsId
+    @JoinColumn(name = "immobile_id")
     private Immobile immobile;
 
 }

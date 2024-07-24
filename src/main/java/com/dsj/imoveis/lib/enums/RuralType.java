@@ -1,4 +1,4 @@
-package com.dsj.imoveis.lib.entities.enums;
+package com.dsj.imoveis.lib.enums;
 
 public enum RuralType {
     CHACARA,
