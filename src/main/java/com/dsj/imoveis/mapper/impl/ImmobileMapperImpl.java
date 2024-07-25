@@ -2,6 +2,7 @@ package com.dsj.imoveis.mapper.impl;
 
 import com.dsj.imoveis.lib.dto.AddressDTO;
 import com.dsj.imoveis.lib.dto.ImmobileDTO;
+import com.dsj.imoveis.lib.dto.ImmobileMinDTO;
 import com.dsj.imoveis.lib.entities.Address;
 import com.dsj.imoveis.lib.entities.Immobile;
 import com.dsj.imoveis.mapper.ImmobileMapper;
@@ -58,6 +59,22 @@ public class ImmobileMapperImpl implements ImmobileMapper {
                 .subtype(entity.getSubtype())
                 .category(entity.getCategory())
                 .imageUrls(entity.getImageUrls())
+                .address(mapAddressDTO(entity.getAddress()))
+                .build();
+    }
+
+    @Override
+    public ImmobileMinDTO mapImmobileMinDTO(Immobile entity) {
+        return  ImmobileMinDTO.builder().id(entity.getId())
+                .title(entity.getTitle())
+                .totalArea(entity.getTotalArea())
+                .suites(entity.getSuites())
+                .bedrooms(entity.getBedrooms())
+                .garage(entity.getGarage())
+                .salePrice(entity.getSalePrice())
+                .rentPrice(entity.getRentPrice())
+                .subtype(entity.getSubtype())
+                .category(entity.getCategory())
                 .address(mapAddressDTO(entity.getAddress()))
                 .build();
     }
