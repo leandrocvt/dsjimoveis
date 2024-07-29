@@ -7,11 +7,14 @@ import com.dsj.imoveis.lib.enums.*;
 import com.dsj.imoveis.mapper.ImmobileMapper;
 import com.dsj.imoveis.repository.ImmobileRepository;
 import com.dsj.imoveis.service.ImmobileService;
+import com.dsj.imoveis.service.exceptions.DatabaseException;
 import com.dsj.imoveis.service.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
@@ -30,6 +33,7 @@ public class ImmobileServiceImpl implements ImmobileService {
         Immobile entity = immobileMapper.mapImmobile(dto);
 
         validateImmobile(entity);
+
 
         entity = repository.save(entity);
         return immobileMapper.mapImmobileDTO(entity);
@@ -79,6 +83,11 @@ public class ImmobileServiceImpl implements ImmobileService {
     }
 
     private void validateImmobile(Immobile immobile) {
+        validateCategoryAndSubtype(immobile);
+        validateOption(immobile);
+    }
+
+    private void validateCategoryAndSubtype(Immobile immobile) {
         if (immobile.getCategory() == null) {
             throw new IllegalArgumentException("Category must be provided");
         }
@@ -104,39 +113,54 @@ public class ImmobileServiceImpl implements ImmobileService {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid subtype '" + immobile.getSubtype() + "' for category " + immobile.getCategory(), e);
         }
+    }
 
+    private void validateOption(Immobile immobile) {
         if (Objects.isNull(immobile.getOption())) {
             throw new IllegalArgumentException("Option must be provided");
         }
 
         switch (immobile.getOption()) {
             case SALE:
-                if (Objects.isNull(immobile.getSalePrice()) || immobile.getSalePrice() <= 0) {
-                    throw new IllegalArgumentException("Sale price must be provided!");
-                }
-                if (Objects.nonNull(immobile.getRentPrice()) && immobile.getRentPrice() > 0) {
-                    throw new IllegalArgumentException("Rent price must be null for SALE option");
-                }
+                validateSaleOption(immobile);
                 break;
             case RENT:
-                if (Objects.isNull(immobile.getRentPrice()) || immobile.getRentPrice() <= 0) {
-                    throw new IllegalArgumentException("Rent price must be provided!");
-                }
-                if (Objects.nonNull(immobile.getSalePrice()) && immobile.getSalePrice() > 0) {
-                    throw new IllegalArgumentException("Sale price must be null for RENT option");
-                }
+                validateRentOption(immobile);
                 break;
             case SALE_RENT:
-                if (Objects.isNull(immobile.getSalePrice()) || immobile.getSalePrice() <= 0) {
-                    throw new IllegalArgumentException("Sale price must be provided for SALE_RENT option!");
-                }
-                if (Objects.isNull(immobile.getRentPrice()) || immobile.getRentPrice() <= 0) {
-                    throw new IllegalArgumentException("Rent price must be provided for SALE_RENT option");
-                }
+                validateSaleRentOption(immobile);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid option: " + immobile.getOption());
         }
     }
+
+    private void validateSaleOption(Immobile immobile) {
+        if (Objects.isNull(immobile.getSalePrice()) || immobile.getSalePrice() <= 0) {
+            throw new IllegalArgumentException("Sale price must be provided!");
+        }
+        if (Objects.nonNull(immobile.getRentPrice()) && immobile.getRentPrice() > 0) {
+            throw new IllegalArgumentException("Rent price must be null for SALE option");
+        }
+    }
+
+    private void validateRentOption(Immobile immobile) {
+        if (Objects.isNull(immobile.getRentPrice()) || immobile.getRentPrice() <= 0) {
+            throw new IllegalArgumentException("Rent price must be provided!");
+        }
+        if (Objects.nonNull(immobile.getSalePrice()) && immobile.getSalePrice() > 0) {
+            throw new IllegalArgumentException("Sale price must be null for RENT option");
+        }
+    }
+
+    private void validateSaleRentOption(Immobile immobile) {
+        if (Objects.isNull(immobile.getSalePrice()) || immobile.getSalePrice() <= 0) {
+            throw new IllegalArgumentException("Sale price must be provided for SALE_RENT option!");
+        }
+        if (Objects.isNull(immobile.getRentPrice()) || immobile.getRentPrice() <= 0) {
+            throw new IllegalArgumentException("Rent price must be provided for SALE_RENT option");
+        }
+    }
+
 
 }
