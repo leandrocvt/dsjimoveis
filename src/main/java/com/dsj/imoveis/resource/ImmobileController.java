@@ -3,6 +3,7 @@ package com.dsj.imoveis.resource;
 import com.dsj.imoveis.lib.dto.ImmobileDTO;
 import com.dsj.imoveis.lib.dto.ImmobileMinDTO;
 import com.dsj.imoveis.lib.enums.ImmobileCategory;
+import com.dsj.imoveis.lib.enums.OptionImmobile;
 import com.dsj.imoveis.service.ImmobileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,9 +52,10 @@ public class ImmobileController {
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "bedrooms", required = false) Integer bedrooms,
             @RequestParam(value = "zipCode", required = false) String zipCode,
+            @RequestParam(value = "option", defaultValue = "") OptionImmobile option,
             Pageable pageable
             ) {
-        Page<ImmobileMinDTO> dto = service.findAll(title, category, subtype, city, state, neighborhood, minPrice, maxPrice, bedrooms, zipCode, pageable);
+        Page<ImmobileMinDTO> dto = service.findAll(title, category, subtype, city, state, neighborhood, minPrice, maxPrice, bedrooms, zipCode, option, pageable);
         PagedModel<EntityModel<ImmobileMinDTO>> pagedModel = pagedResourcesAssembler.toModel(dto);
         return ResponseEntity.ok(pagedModel);
     }

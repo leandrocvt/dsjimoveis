@@ -3,6 +3,7 @@ package com.dsj.imoveis.service;
 import com.dsj.imoveis.lib.dto.ImmobileDTO;
 import com.dsj.imoveis.lib.dto.ImmobileMinDTO;
 import com.dsj.imoveis.lib.enums.ImmobileCategory;
+import com.dsj.imoveis.lib.enums.OptionImmobile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,6 +23,7 @@ public interface ImmobileService {
                                  Double maxPrice,
                                  Integer bedrooms,
                                  String zipCode,
+                                 OptionImmobile option,
                                  Pageable pageable);
 
 }

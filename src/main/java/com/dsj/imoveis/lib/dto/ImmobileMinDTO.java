@@ -2,6 +2,7 @@ package com.dsj.imoveis.lib.dto;
 
 import com.dsj.imoveis.lib.entities.Immobile;
 import com.dsj.imoveis.lib.enums.ImmobileCategory;
+import com.dsj.imoveis.lib.enums.OptionImmobile;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
@@ -20,6 +21,7 @@ public record ImmobileMinDTO(
          String subtype,
          ImmobileCategory category,
          @JsonInclude(JsonInclude.Include.NON_NULL)
-         AddressDTO address
+         AddressDTO address,
+         OptionImmobile option
 ) {
 }

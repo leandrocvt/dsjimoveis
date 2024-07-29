@@ -34,6 +34,7 @@ public class ImmobileMapperImpl implements ImmobileMapper {
                 .imageUrls(dto.imageUrls())
                 .category(dto.category())
                 .address(address)
+                .option(dto.option())
                 .build();
 
         address.setImmobile(immobile);
@@ -60,6 +61,7 @@ public class ImmobileMapperImpl implements ImmobileMapper {
                 .category(entity.getCategory())
                 .imageUrls(entity.getImageUrls())
                 .address(mapAddressDTO(entity.getAddress()))
+                .option(entity.getOption())
                 .build();
     }
 
@@ -76,6 +78,7 @@ public class ImmobileMapperImpl implements ImmobileMapper {
                 .subtype(entity.getSubtype())
                 .category(entity.getCategory())
                 .address(mapAddressDTO(entity.getAddress()))
+                .option(entity.getOption())
                 .build();
     }
 

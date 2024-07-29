@@ -1,9 +1,6 @@
 package com.dsj.imoveis.lib.entities;
 
-import com.dsj.imoveis.lib.enums.CommercialType;
-import com.dsj.imoveis.lib.enums.ImmobileCategory;
-import com.dsj.imoveis.lib.enums.ResidentialType;
-import com.dsj.imoveis.lib.enums.RuralType;
+import com.dsj.imoveis.lib.enums.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +32,9 @@ public class Immobile {
     private ImmobileCategory category;
     private List<String> characteristics;
     private List<String> imageUrls;
+
+    @Enumerated(EnumType.STRING)
+    private OptionImmobile option;
 
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
