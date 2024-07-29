@@ -26,4 +26,6 @@ public interface ImmobileService {
                                  OptionImmobile option,
                                  Pageable pageable);
 
+    void delete(Long id);
+
 }

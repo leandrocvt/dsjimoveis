@@ -64,6 +64,20 @@ public class ImmobileServiceImpl implements ImmobileService {
         return result.map(immobileMapper::mapImmobileMinDTO);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Resource not found!");
+        }
+        try {
+            repository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Referential integrity failure!");
+        }
+    }
+
     private void validateImmobile(Immobile immobile) {
         if (immobile.getCategory() == null) {
             throw new IllegalArgumentException("Category must be provided");
