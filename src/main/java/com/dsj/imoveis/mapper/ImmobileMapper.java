@@ -8,6 +8,6 @@ public interface ImmobileMapper {
 
     Immobile mapImmobile(ImmobileDTO dto);
     ImmobileDTO mapImmobileDTO(Immobile entity);
-
     ImmobileMinDTO mapImmobileMinDTO(Immobile entity);
+    void updateImmobileFromDTO(ImmobileDTO dto, Immobile entity);
 }

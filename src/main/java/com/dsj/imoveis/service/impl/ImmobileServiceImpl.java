@@ -9,6 +9,7 @@ import com.dsj.imoveis.repository.ImmobileRepository;
 import com.dsj.imoveis.service.ImmobileService;
 import com.dsj.imoveis.service.exceptions.DatabaseException;
 import com.dsj.imoveis.service.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -31,10 +32,7 @@ public class ImmobileServiceImpl implements ImmobileService {
     @Transactional
     public ImmobileDTO save(ImmobileDTO dto) {
         Immobile entity = immobileMapper.mapImmobile(dto);
-
         validateImmobile(entity);
-
-
         entity = repository.save(entity);
         return immobileMapper.mapImmobileDTO(entity);
     }
@@ -66,6 +64,20 @@ public class ImmobileServiceImpl implements ImmobileService {
 
         Page<Immobile> result = repository.search(title, category, subtype, city, state, neighborhood, minPrice, maxPrice, bedrooms, zipCode, option, pageable);
         return result.map(immobileMapper::mapImmobileMinDTO);
+    }
+
+    @Override
+    @Transactional
+    public ImmobileDTO update(Long id, ImmobileDTO dto) {
+        try {
+            Immobile entity = repository.getReferenceById(id);
+            immobileMapper.updateImmobileFromDTO(dto, entity);
+            validateImmobile(entity);
+            entity = repository.save(entity);
+            return immobileMapper.mapImmobileDTO(entity);
+        } catch (EntityNotFoundException e){
+            throw new ResourceNotFoundException("Recurso não encontrado!");
+        }
     }
 
     @Override

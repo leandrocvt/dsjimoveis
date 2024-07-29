@@ -60,6 +60,12 @@ public class ImmobileController {
         return ResponseEntity.ok(pagedModel);
     }
 
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ImmobileDTO> update(@PathVariable Long id, @RequestBody ImmobileDTO dto){
+        dto = service.update(id, dto);
+        return ResponseEntity.ok(dto);
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         service.delete(id);

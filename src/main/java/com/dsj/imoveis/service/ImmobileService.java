@@ -11,7 +11,7 @@ public interface ImmobileService {
 
     ImmobileDTO save(final ImmobileDTO dto);
 
-    ImmobileDTO findById(Long id);
+    ImmobileDTO findById(final Long id);
 
     Page<ImmobileMinDTO> findAll(String title,
                                  ImmobileCategory category,
@@ -26,6 +26,8 @@ public interface ImmobileService {
                                  OptionImmobile option,
                                  Pageable pageable);
 
-    void delete(Long id);
+    ImmobileDTO update(final Long id, final ImmobileDTO dto);
+
+    void delete(final Long id);
 
 }

@@ -9,6 +9,8 @@ import com.dsj.imoveis.mapper.ImmobileMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 @RequiredArgsConstructor
 public class ImmobileMapperImpl implements ImmobileMapper {
@@ -80,6 +82,41 @@ public class ImmobileMapperImpl implements ImmobileMapper {
                 .address(mapAddressDTO(entity.getAddress()))
                 .option(entity.getOption())
                 .build();
+    }
+
+    @Override
+    public void updateImmobileFromDTO(ImmobileDTO dto, Immobile entity) {
+
+        entity.setTitle(dto.title());
+        entity.setTotalArea(dto.totalArea());
+        entity.setPrivateArea(dto.privateArea());
+        entity.setSuites(dto.suites());
+        entity.setBedrooms(dto.bedrooms());
+        entity.setGarage(dto.garage());
+        entity.setDescription(dto.description());
+        entity.setIptu(dto.iptu());
+        entity.setSalePrice(dto.salePrice());
+        entity.setRentPrice(dto.rentPrice());
+        entity.setSubtype(dto.subtype());
+        entity.setCharacteristics(dto.characteristics());
+        entity.setImageUrls(dto.imageUrls());
+        entity.setCategory(dto.category());
+        entity.setOption(dto.option());
+
+        if (Objects.isNull(entity.getAddress())) {
+            entity.setAddress(new Address());
+        }
+
+        Address address = entity.getAddress();
+        AddressDTO addressDTO = dto.address();
+
+        if (Objects.nonNull(addressDTO)) {
+            address.setNeighborhood(addressDTO.neighborhood());
+            address.setCity(addressDTO.city());
+            address.setState(addressDTO.state());
+            address.setZipCode(addressDTO.zipCode());
+            address.setImmobile(entity);
+        }
     }
 
     private Address mapAddress(AddressDTO dto) {
