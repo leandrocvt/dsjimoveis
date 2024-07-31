@@ -1,6 +1,7 @@
 package com.dsj.imoveis.resource.handlers;
 
 import com.dsj.imoveis.lib.dto.CustomError;
+import com.dsj.imoveis.service.exceptions.ForbiddenException;
 import com.dsj.imoveis.service.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 
 @ControllerAdvice
@@ -32,6 +34,13 @@ public class ControllerExceptionHandler {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         String errorMessage = "Invalid category. Acceptable values: RURAL, RESIDENCIAL, COMERCIAL";
         CustomError err = new CustomError(Instant.now(), status.value(), errorMessage, request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<CustomError> forbidden(ForbiddenException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        CustomError err = new CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
 

@@ -36,8 +36,7 @@ public class ImmobileServiceImpl implements ImmobileService {
         entity = repository.save(entity);
         return immobileMapper.mapImmobileDTO(entity);
     }
-
-
+    
     @Override
     @Transactional(readOnly = true)
     public ImmobileDTO findById(Long id) {
