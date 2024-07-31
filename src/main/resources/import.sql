@@ -1,0 +1,1 @@
+INSERT INTO tb_user (name, email, password) VALUES ('Felipe Mandri', 'felipe@gmail.com', '$2a$10$71KMqEk340X6pjfU6uY2h.8ly5pR7d6eAp2sY4uP2gRxRJfNM89P.');
