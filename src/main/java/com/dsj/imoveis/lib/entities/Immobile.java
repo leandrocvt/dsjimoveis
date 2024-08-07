@@ -29,6 +29,7 @@ public class Immobile {
     private Double salePrice;
     private Double rentPrice;
     private String subtype;
+    @Enumerated(EnumType.STRING)
     private ImmobileCategory category;
     private List<String> characteristics;
     private List<String> imageUrls;

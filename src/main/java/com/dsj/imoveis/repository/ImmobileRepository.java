@@ -14,16 +14,16 @@ import org.springframework.stereotype.Repository;
 public interface ImmobileRepository extends JpaRepository<Immobile, Long> {
 
     @Query("SELECT obj FROM Immobile obj " +
-            "WHERE (:title IS NULL OR UPPER(obj.title) LIKE UPPER(CONCAT('%', :title, '%'))) " +
+            "WHERE (:title IS NULL OR UPPER(CAST(obj.title AS string)) LIKE UPPER(CONCAT('%', CAST(:title AS string), '%'))) " +
             "AND (:category IS NULL OR obj.category = :category) " +
-            "AND (:subtype IS NULL OR UPPER(obj.subtype) LIKE UPPER(CONCAT('%', :subtype, '%'))) " +
-            "AND (:city IS NULL OR UPPER(obj.address.city) LIKE UPPER(CONCAT('%', :city, '%'))) " +
-            "AND (:state IS NULL OR UPPER(obj.address.state) LIKE UPPER(CONCAT('%', :state, '%'))) " +
-            "AND (:neighborhood IS NULL OR UPPER(obj.address.neighborhood) LIKE UPPER(CONCAT('%', :neighborhood, '%'))) " +
+            "AND (:subtype IS NULL OR UPPER(CAST(obj.subtype AS string)) LIKE UPPER(CONCAT('%', CAST(:subtype AS string), '%'))) " +
+            "AND (:city IS NULL OR UPPER(CAST(obj.address.city AS string)) LIKE UPPER(CONCAT('%', CAST(:city AS string), '%'))) " +
+            "AND (:state IS NULL OR UPPER(CAST(obj.address.state AS string)) LIKE UPPER(CONCAT('%', CAST(:state AS string), '%'))) " +
+            "AND (:neighborhood IS NULL OR UPPER(CAST(obj.address.neighborhood AS string)) LIKE UPPER(CONCAT('%', CAST(:neighborhood AS string), '%'))) " +
             "AND (:minPrice IS NULL OR obj.salePrice >= :minPrice) " +
             "AND (:maxPrice IS NULL OR obj.salePrice <= :maxPrice) " +
             "AND (:bedrooms IS NULL OR obj.bedrooms = :bedrooms) " +
-            "AND (:zipCode IS NULL OR UPPER(obj.address.zipCode) LIKE UPPER(CONCAT('%', :zipCode, '%'))) " +
+            "AND (:zipCode IS NULL OR UPPER(CAST(obj.address.zipCode AS string)) LIKE UPPER(CONCAT('%', CAST(:zipCode AS string), '%'))) " +
             "AND (:option IS NULL OR obj.option = :option OR obj.option = 'SALE_RENT')"
     )
     Page<Immobile> search(
