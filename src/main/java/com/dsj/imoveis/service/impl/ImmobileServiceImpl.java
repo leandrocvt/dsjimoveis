@@ -75,7 +75,7 @@ public class ImmobileServiceImpl implements ImmobileService {
             entity = repository.save(entity);
             return immobileMapper.mapImmobileDTO(entity);
         } catch (EntityNotFoundException e){
-            throw new ResourceNotFoundException("Recurso não encontrado!");
+            throw new ResourceNotFoundException("Resource not found!");
         }
     }
 
