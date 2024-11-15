@@ -9,6 +9,7 @@ import com.dsj.imoveis.mapper.ImmobileMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -69,8 +70,12 @@ public class ImmobileMapperImpl implements ImmobileMapper {
 
     @Override
     public ImmobileMinDTO mapImmobileMinDTO(Immobile entity) {
+        List<String> imageUrls = entity.getImageUrls();
+        String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+
         return  ImmobileMinDTO.builder().id(entity.getId())
                 .title(entity.getTitle())
+                .firstImageUrl(firstImageUrl)
                 .totalArea(entity.getTotalArea())
                 .suites(entity.getSuites())
                 .bedrooms(entity.getBedrooms())
