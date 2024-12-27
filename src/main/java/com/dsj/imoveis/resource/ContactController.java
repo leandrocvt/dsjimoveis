@@ -19,11 +19,7 @@ public class ContactController {
 
     @PostMapping
     public ResponseEntity<String> sendContactMessage(@RequestBody ContactRequest contactRequest) {
-        try {
-            contactService.sendContactMessage(contactRequest);
-            return ResponseEntity.ok("Mensagem enviada com sucesso!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao enviar a mensagem: " + e.getMessage());
-        }
+        contactService.sendContactMessage(contactRequest);
+        return ResponseEntity.ok("Mensagem enviada com sucesso!");
     }
 }

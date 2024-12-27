@@ -2,6 +2,7 @@ package com.dsj.imoveis.resource.handlers;
 
 import com.dsj.imoveis.lib.dto.CustomError;
 import com.dsj.imoveis.service.exceptions.ForbiddenException;
+import com.dsj.imoveis.service.exceptions.MessageAlreadySentException;
 import com.dsj.imoveis.service.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,13 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<CustomError> forbidden(ForbiddenException e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.FORBIDDEN;
+        CustomError err = new CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(MessageAlreadySentException.class)
+    public ResponseEntity<CustomError> handleMessageAlreadySent(MessageAlreadySentException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
         CustomError err = new CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }

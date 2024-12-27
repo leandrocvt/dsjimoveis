@@ -1,7 +1,10 @@
 package com.dsj.imoveis.service.impl;
 
 import com.dsj.imoveis.lib.dto.ContactRequest;
+import com.dsj.imoveis.lib.entities.MessageLog;
+import com.dsj.imoveis.repository.MessageLogRepository;
 import com.dsj.imoveis.service.ContactService;
+import com.dsj.imoveis.service.exceptions.MessageAlreadySentException;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -13,6 +16,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 @Service
@@ -20,6 +25,7 @@ import java.util.Objects;
 public class ContactServiceImpl implements ContactService {
 
     private final JavaMailSender mailSender;
+    private final MessageLogRepository messageLogRepository;
 
     @Value("${twilio.account.sid}")
     private String accountSid;
@@ -49,8 +55,17 @@ public class ContactServiceImpl implements ContactService {
             if (!isValidPhoneNumber(contactRequest.phoneNumber())) {
                 throw new IllegalArgumentException("Invalid phone number format");
             }
+
+            LocalDateTime startOfDay = LocalDateTime.now().with(LocalTime.MIN);
+            boolean alreadySent = messageLogRepository.hasMessageBeenSentToday(contactRequest.phoneNumber(), startOfDay);
+
+            if (alreadySent) {
+                throw new MessageAlreadySentException("Já foi enviada uma mensagem para este número hoje.");
+            }
+
             String whatsAppMessage = buildWhatsAppMessage(contactRequest);
             sendWhatsAppMessage(contactRequest.phoneNumber(), whatsAppMessage);
+            saveMessageLog(contactRequest.phoneNumber());
         }
     }
 
@@ -93,5 +108,12 @@ public class ContactServiceImpl implements ContactService {
                 "Assim que possível será atendido para tirar quaisquer duvidas ou para agendar uma visita.\n\n" +
                 "Atenciosamente,\n" +
                 "DSJ Imóveis";
+    }
+
+    private void saveMessageLog(String phoneNumber) {
+        MessageLog messageLog = new MessageLog();
+        messageLog.setPhoneNumber(phoneNumber);
+        messageLog.setSentAt(LocalDateTime.now());
+        messageLogRepository.save(messageLog);
     }
 }
