@@ -26,4 +26,24 @@ public record ImmobileDTO(
          List<String> imageUrls,
          AddressDTO address
 ) {
+    public ImmobileDTOBuilder toBuilder() {
+        return builder()
+                .id(id)
+                .title(title)
+                .totalArea(totalArea)
+                .privateArea(privateArea)
+                .suites(suites)
+                .bedrooms(bedrooms)
+                .garage(garage)
+                .description(description)
+                .characteristics(characteristics)
+                .iptu(iptu)
+                .salePrice(salePrice)
+                .rentPrice(rentPrice)
+                .subtype(subtype)
+                .category(category)
+                .option(option)
+                .imageUrls(imageUrls)
+                .address(address);
+    }
 }

@@ -1,5 +1,7 @@
 package com.dsj.imoveis.service.impl;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.dsj.imoveis.lib.dto.ImmobileDTO;
 import com.dsj.imoveis.lib.dto.ImmobileMinDTO;
 import com.dsj.imoveis.lib.entities.Immobile;
@@ -7,6 +9,7 @@ import com.dsj.imoveis.lib.enums.*;
 import com.dsj.imoveis.mapper.ImmobileMapper;
 import com.dsj.imoveis.repository.ImmobileRepository;
 import com.dsj.imoveis.service.ImmobileService;
+import com.dsj.imoveis.service.S3Service;
 import com.dsj.imoveis.service.exceptions.DatabaseException;
 import com.dsj.imoveis.service.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,7 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -28,10 +35,29 @@ public class ImmobileServiceImpl implements ImmobileService {
 
     private final ImmobileMapper immobileMapper;
 
+    private final S3Service s3Service;
+
+    private final AmazonS3 amazonS3;
+
     @Override
     @Transactional
-    public ImmobileDTO save(ImmobileDTO dto) {
-        Immobile entity = immobileMapper.mapImmobile(dto);
+    public ImmobileDTO save(ImmobileDTO dto, List<MultipartFile> files) {
+
+        List<String> imageUrls = new ArrayList<>();
+        try {
+            for (MultipartFile file : files) {
+                String imageUrl = s3Service.uploadImage(file);
+                imageUrls.add(imageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao fazer upload das imagens", e);
+        }
+
+        ImmobileDTO updatedDto = dto.toBuilder()
+                .imageUrls(imageUrls)
+                .build();
+
+        Immobile entity = immobileMapper.mapImmobile(updatedDto);
         validateImmobile(entity);
         entity = repository.save(entity);
         return immobileMapper.mapImmobileDTO(entity);
@@ -67,17 +93,41 @@ public class ImmobileServiceImpl implements ImmobileService {
 
     @Override
     @Transactional
-    public ImmobileDTO update(Long id, ImmobileDTO dto) {
+    public ImmobileDTO update(Long id, ImmobileDTO dto, List<MultipartFile> files) {
         try {
-            Immobile entity = repository.getReferenceById(id);
+            Immobile entity = repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Immobile not found"));
+            
+            List<String> currentImageUrls = new ArrayList<>(entity.getImageUrls());
+            List<String> updatedImageUrls = dto.imageUrls() != null ? dto.imageUrls() : new ArrayList<>();
+
+            for (String currentUrl : currentImageUrls) {
+                if (!updatedImageUrls.contains(currentUrl)) {
+                    String fileName = extractFileNameFromUrl(currentUrl);
+                    deleteImageFromS3(fileName);
+                }
+            }
+
+            if (files != null && !files.isEmpty()) {
+                for (MultipartFile file : files) {
+                    String imageUrl = s3Service.uploadImage(file);
+                    updatedImageUrls.add(imageUrl);
+                }
+            }
+            entity.setImageUrls(updatedImageUrls);
+
             immobileMapper.updateImmobileFromDTO(dto, entity);
             validateImmobile(entity);
+
             entity = repository.save(entity);
             return immobileMapper.mapImmobileDTO(entity);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Resource not found!");
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao fazer upload das imagens", e);
         }
     }
+
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -85,11 +135,35 @@ public class ImmobileServiceImpl implements ImmobileService {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Resource not found!");
         }
+
+        Immobile immobile = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Immobile not found"));
+
+        if (immobile.getImageUrls() != null) {
+            for (String imageUrl : immobile.getImageUrls()) {
+                String fileName = extractFileNameFromUrl(imageUrl);
+                deleteImageFromS3(fileName);
+            }
+        }
+
         try {
             repository.deleteById(id);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Referential integrity failure!");
+        }
+    }
+
+    private String extractFileNameFromUrl(String imageUrl) {
+        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    }
+
+    private void deleteImageFromS3(String fileName) {
+        String bucketName = "dsj-imoveis-images";
+
+        try {
+            amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao excluir a imagem do S3", e);
         }
     }
 
@@ -172,6 +246,5 @@ public class ImmobileServiceImpl implements ImmobileService {
             throw new IllegalArgumentException("Rent price must be provided for SALE_RENT option");
         }
     }
-
 
 }
