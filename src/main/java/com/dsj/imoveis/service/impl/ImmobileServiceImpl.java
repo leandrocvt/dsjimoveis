@@ -158,7 +158,7 @@ public class ImmobileServiceImpl implements ImmobileService {
     }
 
     private void deleteImageFromS3(String fileName) {
-        String bucketName = "dsj-imoveis-images";
+        String bucketName = "dsj-imoveis-imgs";
 
         try {
             amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
