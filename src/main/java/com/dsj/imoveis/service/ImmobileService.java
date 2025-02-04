@@ -25,6 +25,8 @@ public interface ImmobileService {
                                  Double minPrice,
                                  Double maxPrice,
                                  Integer bedrooms,
+                                 Integer suites,
+                                 Integer garage,
                                  String zipCode,
                                  OptionImmobile option,
                                  Pageable pageable);
