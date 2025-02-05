@@ -25,7 +25,6 @@ public class Immobile {
     private Integer suites;
     private Integer bedrooms;
     private Integer garage;
-    private String description;
     private Double iptu;
     private Double salePrice;
     private Double rentPrice;
@@ -34,6 +33,9 @@ public class Immobile {
     private ImmobileCategory category;
     private List<String> characteristics;
     private List<String> imageUrls;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant createdAt;
