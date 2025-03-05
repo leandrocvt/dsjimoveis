@@ -16,6 +16,7 @@ public record ImmobileMinDTO(
         Double salePrice,
         Double rentPrice,
         String subtype,
+        Boolean highlight,
         ImmobileCategory category,
         OptionImmobile option,
 

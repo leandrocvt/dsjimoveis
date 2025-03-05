@@ -84,6 +84,7 @@ public class ImmobileMapperImpl implements ImmobileMapper {
                 .garage(entity.getGarage())
                 .salePrice(entity.getSalePrice())
                 .rentPrice(entity.getRentPrice())
+                .highlight(entity.getHighlight())
                 .subtype(entity.getSubtype())
                 .category(entity.getCategory())
                 .address(mapAddressDTO(entity.getAddress()))
