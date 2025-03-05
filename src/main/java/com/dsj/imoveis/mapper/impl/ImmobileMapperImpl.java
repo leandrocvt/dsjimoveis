@@ -32,6 +32,7 @@ public class ImmobileMapperImpl implements ImmobileMapper {
                 .iptu(dto.iptu())
                 .salePrice(dto.salePrice())
                 .rentPrice(dto.rentPrice())
+                .highlight(dto.highlight())
                 .subtype(dto.subtype())
                 .characteristics(dto.characteristics())
                 .imageUrls(dto.imageUrls())
@@ -60,6 +61,7 @@ public class ImmobileMapperImpl implements ImmobileMapper {
                 .iptu(entity.getIptu())
                 .salePrice(entity.getSalePrice())
                 .rentPrice(entity.getRentPrice())
+                .highlight(entity.getHighlight())
                 .subtype(entity.getSubtype())
                 .category(entity.getCategory())
                 .imageUrls(entity.getImageUrls())
@@ -102,6 +104,7 @@ public class ImmobileMapperImpl implements ImmobileMapper {
         entity.setIptu(dto.iptu());
         entity.setSalePrice(dto.salePrice());
         entity.setRentPrice(dto.rentPrice());
+        entity.setHighlight(dto.highlight());
         entity.setSubtype(dto.subtype());
         entity.setCharacteristics(dto.characteristics());
         entity.setImageUrls(dto.imageUrls());

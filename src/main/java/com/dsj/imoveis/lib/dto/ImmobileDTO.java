@@ -20,6 +20,7 @@ public record ImmobileDTO(
          Double iptu,
          Double salePrice,
          Double rentPrice,
+         Boolean highlight,
          String subtype,
          ImmobileCategory category,
          OptionImmobile option,
@@ -40,6 +41,7 @@ public record ImmobileDTO(
                 .iptu(iptu)
                 .salePrice(salePrice)
                 .rentPrice(rentPrice)
+                .highlight(highlight)
                 .subtype(subtype)
                 .category(category)
                 .option(option)
