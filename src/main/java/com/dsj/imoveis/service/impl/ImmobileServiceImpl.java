@@ -82,6 +82,8 @@ public class ImmobileServiceImpl implements ImmobileService {
             String neighborhood,
             Double minPrice,
             Double maxPrice,
+            Double minArea,
+            Double maxArea,
             Integer bedrooms,
             Integer suite,
             Integer garage,
@@ -89,7 +91,7 @@ public class ImmobileServiceImpl implements ImmobileService {
             OptionImmobile option,
             Pageable pageable) {
 
-        Page<Immobile> result = repository.search(title, category, subtype, city, state, neighborhood, minPrice, maxPrice, bedrooms, suite, garage, zipCode, option, pageable);
+        Page<Immobile> result = repository.search(title, category, subtype, city, state, neighborhood, minPrice, maxPrice, minArea, maxArea, bedrooms, suite, garage, zipCode, option, pageable);
         return result.map(immobileMapper::mapImmobileMinDTO);
     }
 

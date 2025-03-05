@@ -22,6 +22,8 @@ public interface ImmobileRepository extends JpaRepository<Immobile, Long> {
             "AND (:neighborhood IS NULL OR UPPER(CAST(obj.address.neighborhood AS string)) LIKE UPPER(CONCAT('%', CAST(:neighborhood AS string), '%'))) " +
             "AND (:minPrice IS NULL OR obj.salePrice >= :minPrice) " +
             "AND (:maxPrice IS NULL OR obj.salePrice <= :maxPrice) " +
+            "AND (:minArea IS NULL OR obj.totalArea >= :minArea) " +
+            "AND (:maxArea IS NULL OR obj.totalArea <= :maxArea) " +
             "AND (:bedrooms IS NULL OR obj.bedrooms = :bedrooms) " +
             "AND (:suites IS NULL OR obj.suites = :suites) " +
             "AND (:garage IS NULL OR obj.garage = :garage) " +
@@ -37,12 +39,12 @@ public interface ImmobileRepository extends JpaRepository<Immobile, Long> {
             @Param("neighborhood") String neighborhood,
             @Param("minPrice") Double minPrice,
             @Param("maxPrice") Double maxPrice,
+            @Param("minArea") Double minArea,
+            @Param("maxArea") Double maxArea,
             @Param("bedrooms") Integer bedrooms,
             @Param("suites") Integer suites,
             @Param("garage") Integer garage,
             @Param("zipCode") String zipCode,
             @Param("option") OptionImmobile option,
             Pageable pageable);
-
-
 }

@@ -24,6 +24,8 @@ public interface ImmobileService {
                                  String neighborhood,
                                  Double minPrice,
                                  Double maxPrice,
+                                 Double minArea,
+                                 Double maxArea,
                                  Integer bedrooms,
                                  Integer suites,
                                  Integer garage,

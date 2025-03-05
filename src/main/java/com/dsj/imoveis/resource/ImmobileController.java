@@ -71,6 +71,8 @@ public class ImmobileController {
             @RequestParam(value = "neighborhood", required = false) String neighborhood,
             @RequestParam(value = "minPrice", required = false) Double minPrice,
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "minArea", required = false) Double minArea,
+            @RequestParam(value = "maxArea", required = false) Double maxArea,
             @RequestParam(value = "bedrooms", required = false) Integer bedrooms,
             @RequestParam(value = "suites", required = false) Integer suites,
             @RequestParam(value = "garage", required = false) Integer garage,
@@ -78,7 +80,7 @@ public class ImmobileController {
             @RequestParam(value = "option", defaultValue = "") OptionImmobile option,
             Pageable pageable
             ) {
-        Page<ImmobileMinDTO> dto = service.findAll(title, category, subtype, city, state, neighborhood, minPrice, maxPrice, bedrooms, suites, garage, zipCode, option, pageable);
+        Page<ImmobileMinDTO> dto = service.findAll(title, category, subtype, city, state, neighborhood, minPrice, maxPrice, minArea, maxArea, bedrooms, suites, garage, zipCode, option, pageable);
         PagedModel<EntityModel<ImmobileMinDTO>> pagedModel = pagedResourcesAssembler.toModel(dto);
         return ResponseEntity.ok(pagedModel);
     }
