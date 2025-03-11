@@ -35,8 +35,8 @@ public interface ImmobileRepository extends JpaRepository<Immobile, Long> {
             "AND (:garage IS NULL OR obj.garage = :garage) " +
             "AND (:zipCode IS NULL OR UPPER(CAST(obj.address.zipCode AS string)) LIKE UPPER(CONCAT('%', CAST(:zipCode AS string), '%'))) " +
             "AND (:option IS NULL OR " +
-            "    (:option = 'RENT' AND (obj.option = 'RENT' OR obj.option = 'SALE_RENT')) OR " +
-            "    (:option = 'SALE' AND (obj.option = 'SALE' OR obj.option = 'SALE_RENT'))) "
+            "    (:option = 'RENT' AND (obj.option = :option OR obj.option = 'SALE_RENT')) OR " +
+            "    (:option = 'SALE' AND (obj.option = :option OR obj.option = 'SALE_RENT'))))"
     )
     Page<Immobile> search(
             @Param("title") String title,
