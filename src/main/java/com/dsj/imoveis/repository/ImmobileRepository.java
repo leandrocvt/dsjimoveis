@@ -20,15 +20,23 @@ public interface ImmobileRepository extends JpaRepository<Immobile, Long> {
             "AND (:city IS NULL OR UPPER(CAST(obj.address.city AS string)) LIKE UPPER(CONCAT('%', CAST(:city AS string), '%'))) " +
             "AND (:state IS NULL OR UPPER(CAST(obj.address.state AS string)) LIKE UPPER(CONCAT('%', CAST(:state AS string), '%'))) " +
             "AND (:neighborhood IS NULL OR UPPER(CAST(obj.address.neighborhood AS string)) LIKE UPPER(CONCAT('%', CAST(:neighborhood AS string), '%'))) " +
-            "AND (:minPrice IS NULL OR obj.salePrice >= :minPrice) " +
-            "AND (:maxPrice IS NULL OR obj.salePrice <= :maxPrice) " +
+            "AND (:minPrice IS NULL OR " +
+            "    (:option = 'RENT' AND obj.rentPrice >= :minPrice) OR " +
+            "    (:option = 'SALE' AND obj.salePrice >= :minPrice) OR " +
+            "    (:option = 'SALE_RENT' AND (obj.salePrice >= :minPrice OR obj.rentPrice >= :minPrice))) " +
+            "AND (:maxPrice IS NULL OR " +
+            "    (:option = 'RENT' AND obj.rentPrice <= :maxPrice) OR " +
+            "    (:option = 'SALE' AND obj.salePrice <= :maxPrice) OR " +
+            "    (:option = 'SALE_RENT' AND (obj.salePrice <= :maxPrice OR obj.rentPrice <= :maxPrice))) " +
             "AND (:minArea IS NULL OR obj.totalArea >= :minArea) " +
             "AND (:maxArea IS NULL OR obj.totalArea <= :maxArea) " +
             "AND (:bedrooms IS NULL OR obj.bedrooms = :bedrooms) " +
             "AND (:suites IS NULL OR obj.suites = :suites) " +
             "AND (:garage IS NULL OR obj.garage = :garage) " +
             "AND (:zipCode IS NULL OR UPPER(CAST(obj.address.zipCode AS string)) LIKE UPPER(CONCAT('%', CAST(:zipCode AS string), '%'))) " +
-            "AND (:option IS NULL OR obj.option = :option OR obj.option = 'SALE_RENT')"
+            "AND (:option IS NULL OR " +
+            "    (:option = 'RENT' AND (obj.option = 'RENT' OR obj.option = 'SALE_RENT')) OR " +
+            "    (:option = 'SALE' AND (obj.option = 'SALE' OR obj.option = 'SALE_RENT'))) "
     )
     Page<Immobile> search(
             @Param("title") String title,
